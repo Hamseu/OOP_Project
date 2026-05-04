@@ -16,7 +16,7 @@ public class Manager extends Employee implements CourseManagers, ScienceManagers
     /**
      * 
      */
-    public String Department;
+    public DepartmentType Department;
 
     /**
      * 

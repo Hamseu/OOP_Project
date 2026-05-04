@@ -38,7 +38,7 @@ public class ResearchPaper {
     /**
      * 
      */
-    public String Citations;
+    public int Citations Number;
 
     /**
      * 
@@ -54,6 +54,16 @@ public class ResearchPaper {
      * 
      */
     public Vector<ResearchProject> related_projects;
+
+    /**
+     * 
+     */
+    public int Pages;
+
+    /**
+     * 
+     */
+    public Date Date;
 
     /**
      * 

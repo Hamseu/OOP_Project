@@ -32,6 +32,7 @@ public class ActiveUser {
     public UserType PermissionType;
 
 
+
     /**
      * @return
      */
