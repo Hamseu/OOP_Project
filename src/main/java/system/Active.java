@@ -1,6 +1,8 @@
 package system;
 
-public class Active {
+import java.io.Serializable;
+
+public class Active  implements Serializable{
     public String username;
     public UserType profile;
     public String user_id;
