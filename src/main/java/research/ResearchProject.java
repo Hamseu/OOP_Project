@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import exceptions.NotResearcherException;
-import users.User;
-
 public class ResearchProject implements Serializable {
     public String title;
     public String project_id;
@@ -20,13 +17,6 @@ public class ResearchProject implements Serializable {
         this.budget = budget;
         this.participants = new ArrayList<>();
         this.publishedPapers = new ArrayList<>();
-    }
-
-    public void joinProject(User user) throws NotResearcherException {
-        if (!(user instanceof Researcher)) {
-            throw new NotResearcherException("Only researchers can join research project.");
-        }
-        participants.add((Researcher) user);
     }
 
     public void addPaper(ResearchPaper paper) {

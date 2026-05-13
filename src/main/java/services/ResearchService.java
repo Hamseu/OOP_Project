@@ -9,6 +9,7 @@ import exceptions.NotResearcherException;
 import research.ResearchPaper;
 import research.ResearchProject;
 import research.Researcher;
+import system.UserType;
 import users.Student;
 import users.User;
 
@@ -42,7 +43,21 @@ public class ResearchService {
     }
 
     public void joinProject(ResearchProject project, User user) throws NotResearcherException {
-        project.joinProject(user);
+        if (user.getProfile() != UserType.STUDENT && user.getProfile() != UserType.RESEARCHER && user.getProfile() != UserType.TEACHER)
+        {
+            throw new NotResearcherException("Only researchers can join"); 
+        }
+        if (user.getProfile() == UserType.STUDENT)
+        {
+            Student st = db.getStudentByID(user.getId());
+            if (!st.is_researcher && st.getGpa() > 3.5 && st.getYearOfStudy() >=4){
+                db.updateStudent(st.getId(), st.getYearOfStudy(), st.getGpa(), 3, true, db.getAllResearchers().elementAt(0).getId());
+                db.addResearcher(st.getId(), 3);
+            }
+            if (st.getGpa() <3.5 || st.getYearOfStudy() < 4){
+             throw new NotResearcherException("Not enough score");
+            }
+        }
         db.addProjectMemberToDB(user.getId(), project.project_id);
     }
 

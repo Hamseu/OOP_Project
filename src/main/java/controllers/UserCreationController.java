@@ -28,6 +28,9 @@ public class UserCreationController {
         db.addManager(m, password);
     }
     public void addStudent(Student a, String password){
+        if (a.getYearOfStudy() == 4){
+            db.assignSupervisor(a.getStudentId(), db.getAllResearchers2().elementAt(0).getId());
+        }
         db.addStudent(a, password);
     }
 }

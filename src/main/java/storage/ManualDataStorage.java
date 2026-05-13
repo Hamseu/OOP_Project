@@ -24,7 +24,7 @@ public class ManualDataStorage {
         
 
     } catch (Exception e) {
-        System.out.println("Something is wrong");
+        System.out.println("Local storage is most probably not existing in your reality");
         return null;
     }
     }
@@ -41,7 +41,7 @@ public class ManualDataStorage {
         out.close();
     } catch (Exception e) {
         e.printStackTrace();
-        System.out.println("local storage isn't available");
+        System.out.println("No Admin rights or missing properties, huh?");
     }
 }
 }

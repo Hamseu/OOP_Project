@@ -1,8 +1,6 @@
 package demo;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -21,6 +19,7 @@ import controllers.ResearchController;
 import controllers.UserCreationController;
 import database.UDBM;
 import enums.LessonType;
+import exceptions.ContentNotFoundException;
 import exceptions.LowGPAException;
 import exceptions.UserNotFoundException;
 import reports.Report;
@@ -28,6 +27,7 @@ import research.ResearchPaper;
 import research.ResearchProject;
 import research.Researcher;
 import services.CourseService;
+import services.EmployeeService;
 import services.MarkService;
 import services.ResearchService;
 import services.StudentService;
@@ -54,14 +54,14 @@ public class Main {
     private static final MarkService markService = new MarkService();
     private static final ResearchService researchService = new ResearchService();
     private static final UserCreationController createService = new UserCreationController(db);
-
+    private static final EmployeeService employService = EmployeeService.getInstance();
     private static final StudentService  studentService = StudentService.getInstance();
     private static final AdminController adminController = new AdminController(db);
     private static final CourseController courseController = new CourseController(courseService);
     private static final MarkController markController = new MarkController(markService);
     private static final ResearchController researchController = new ResearchController(researchService);
     static boolean running = true;
-    private static final List<ResearchProject> projects = new ArrayList<>();
+    private static Vector<ResearchProject> projects = researchService.getProjects();
 
     public static void main(String[] args) {
         System.out.println("========================================");
@@ -78,12 +78,8 @@ public class Main {
                 OperationalManager op = OperationalManager.getInstance(actuser.profile);
                 System.out.println("Hello, " + actuser.username + " Welcome to University system, please, choose an action available for you: ");
                 op.operationFrame(); 
-                int choice = 1;  
-                if(scanner.hasNext()){         
-                choice = readInt("Choose command: ");
+                int choice = readInt("Enter your command: ");  
                 if (choice != 1){
-                
-            
                 try {
                     executeOperation(choice, actuser.profile, actuser);
                 }
@@ -95,7 +91,7 @@ public class Main {
                 loginer = false;
             }
         }
-                }
+                
              else{
                 loginer = Authenticate.consolewin(db, scanner);
              }
@@ -103,6 +99,7 @@ public class Main {
             System.out.println();
         }
     }
+
 
     private static void printMenu() {
         System.out.println("--------------- MENU ---------------");
@@ -441,16 +438,19 @@ public class Main {
         throw new Exception("Course not found.");
     }
 
-    private static ResearchProject findProjectByTopic() throws Exception {
+    private static ResearchProject findProjectByTopic() throws ContentNotFoundException {
+         projects = researchService.getProjects();
+         for (ResearchProject pr : projects){
+            System.out.println(pr);
+         }
         String topic = readLine("Project topic: ");
-
         for (ResearchProject project : projects) {
             if (project.getTopic().equalsIgnoreCase(topic)) {
                 return project;
             }
         }
 
-        throw new Exception("Project not found.");
+        throw new ContentNotFoundException("Project not found.");
     }
 
 
@@ -524,6 +524,18 @@ public class Main {
     return true;
 }
 
+public static void makeRequest(Active user){
+      Vector<User> employee = employService.getAllEmployee(db);
+      for (User us : employee){
+        if (us.getProfile() != UserType.STUDENT){
+        System.out.println(us);
+        }
+      }
+      String receiver_id = readLine("Type id of receiver: ");
+      String message = readLine("Write your request: ");
+      employService.makeRequest(user.user_id, receiver_id, message, db);
+}
+
 public static void becomeResearcher(Active user) throws LowGPAException{
        User us = db.getUserByID(user.user_id);
        if (user.profile == UserType.STUDENT){
@@ -543,6 +555,19 @@ public static void becomeResearcher(Active user) throws LowGPAException{
         db.updateTeacher(ts.getId(), ts.getRank().name(), true, 3);
        }
 }
+
+private static void viewOwnRequests(Active user){
+        for (String str : employService.getOwnRequests(db, user.user_id)){
+            System.out.println(str);
+        }
+}
+
+private static void viewReceivedRequests(Active user){
+    for (String str : employService.getReceivedRequests(db, user.user_id)){
+            System.out.println(str);
+        }
+}
+
 private static boolean executeTeacherOperation(int choice, Active user) throws Exception {
     switch (choice) {
         case 2:
@@ -572,11 +597,19 @@ private static boolean executeTeacherOperation(int choice, Active user) throws E
         case 8:
             createResearchPaper();
             break;
+        case 9:
+            makeRequest(user);
+        case 10:
+            viewOwnRequests(user);
+            break;
+        case 11:
+            viewReceivedRequests(user);
+            break;
 
         default:
-            System.out.println("Wrong option.");
+            System.out.println("It was wrong option.");
     }
-
+    String t = scanner.nextLine();
     return true;
 }
 
@@ -643,6 +676,9 @@ public static void printLessons(Active user){
     String c_id = readLine("Select Course");
     Course cou = db.getCourseById(c_id);
     Vector <Lesson> ls = db.getStudentLessonsByCourse(s, cou);
+    for (Lesson lse : ls){
+        System.out.println(lse);
+    }
 }
 
 private static boolean executeAdminManagerOperation(int choice, Active user) throws Exception {
@@ -710,12 +746,21 @@ private static boolean executeAdminManagerOperation(int choice, Active user) thr
         case 17:
             createResearchProject(user);
             break;
+        case 18:
+            makeRequest(user);
+            break;
+        case 19:
+            viewOwnRequests(user);
+            break;
+        case 20:
+            viewReceivedRequests(user);
+            break;
         case 0:
             System.out.println("Goodbye");
         default:
-            System.out.println("Wrong option.");
+            System.out.println(" It was wrong option.");
     }
-
+    String t = scanner.nextLine();
     return true;
 }
 
@@ -757,9 +802,9 @@ private static boolean executeStudentOperation(int choice, Active user) throws E
             break;
 
         default:
-            System.out.println("Wrong option.");
+            System.out.println("It was wrong option.");
     }
-
+    String t = scanner.nextLine();
     return true;
 }
 
@@ -778,11 +823,19 @@ private static boolean executeResearcherOperation(int choice, Active user) throw
         case 5:
             createResearchPaper();
             break;
+        case 6:
+            makeRequest(user);
+        case 7:
+            viewOwnRequests(user);
+            break;
+        case 8:
+            viewReceivedRequests(user);
+            break;
 
         default:
-            System.out.println("Wrong option.");
+            System.out.println("It was wrong option.");
     }
-
+    String t = scanner.nextLine();
     return true;
 }
 

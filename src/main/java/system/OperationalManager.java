@@ -76,6 +76,12 @@ public class OperationalManager{
         System.out.println(counter + ". Print top cited researcher");
         counter++;
         System.out.println(counter + ". Create research project");
+        counter++;
+        System.out.println(counter + ". Make request");
+        counter++;
+        System.out.println(counter + ". Get own requests");
+        counter++;
+        System.out.println(counter + ". Get received requests");
         System.out.println("0. Close console");
     }
 
@@ -114,9 +120,18 @@ public class OperationalManager{
         System.out.println(counter + ". Start research project");
         counter++;
         System.out.println(counter + ". Create research paper");
+        if (switcher == UserType.RESEARCHER || switcher == UserType.TEACHER){
+        counter++;
+        System.out.println(counter + ". Make request");
+        counter++;
+        System.out.println(counter + ". Get own requests");
+        counter++;
+        System.out.println(counter + ". Get received requests");
+    }
         System.out.println("0. Close console");
     }
-}
 
+    
+}
 
 }

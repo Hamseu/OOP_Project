@@ -1948,4 +1948,65 @@ public Vector<Student> getStudentsByLesson(String l_id){
     return students;
 }
 
+public void addRequest(String employee_id_provider, String employee_id_receiver, String request){
+   String sql = """
+           INSERT INTO  request (receiver_id, provider_id, message) VALUES (?, ?, ?)
+           """;
+    try (PreparedStatement ps = conn.prepareStatement(sql)){
+           ps.setString(1, employee_id_receiver);
+           ps.setString(2, employee_id_provider);
+           ps.setString(3, request);
+           ps.executeUpdate();
+    }
+    catch (SQLException sq){
+        sq.printStackTrace();
+    }
 }
+
+public Vector<String> getOwnRequests(String owner_id){
+    Vector<String> requests = new Vector<>();
+    String sql = """
+            SELECT message FROM request WHERE provider_id = ?
+            """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql))
+    {
+        ps.setString(1, owner_id);
+        try (ResultSet rs = ps.executeQuery()){
+            while(rs.next()){
+               requests.add(rs.getString("message"));
+            return requests;
+        }
+    }
+}
+    catch (SQLException sq){
+        System.out.println("No such owner");
+    }
+    return requests;
+}
+
+public Vector<String> getReceivedRequests(String manager_id){
+    Vector<String> requests = new Vector<>();
+    String sql = """
+            SELECT message FROM request WHERE receiver_id = ?
+            """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql))
+    {
+        ps.setString(1, manager_id);
+        try (ResultSet rs = ps.executeQuery()){
+            while(rs.next()){
+               requests.add(rs.getString("message"));
+            return requests;
+        }
+    }
+}
+    catch (SQLException sq){
+        System.out.println("See this message below: ");
+        sq.printStackTrace();
+    }
+    return requests;
+}
+}
+
+
