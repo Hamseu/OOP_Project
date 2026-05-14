@@ -1,17 +1,18 @@
 package services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import academic.Course;
+import academic.Lesson;
 import database.UDBM;
+import exceptions.ContentNotFoundException;
 import exceptions.CreditLimitException;
 import users.Student;
 import users.Teacher;
 
 public class CourseService {
-    private List<Course> courses = new ArrayList<>();
+    private Vector<Course> courses = new Vector<>();
     private static final UDBM db = new UDBM();
 
     public void createCourse(Course course) {
@@ -29,11 +30,32 @@ public class CourseService {
         db.assignStudentToCourse(student, course);
     }
 
-    public List<Course> getCourses() {
-        return courses;
+    public Vector<Course> getCourses() {
+        try {
+        this.courses = db.getAllCourses();
+        }
+        catch (SQLException sq){
+        System.out.println("Failed to load data");
+        }
+        return this.courses;
     }
 
-    public Vector<Course> getCourseDB(){
-        return db.getAllCourses();
+    public void addLesson(Lesson l)
+    {
+        db.addLesson(l);
+    }
+
+    public Course getCourseById(String id_c) throws ContentNotFoundException{
+            
+        this.courses = getCourses();
+        for (Course c : this.courses){
+            if (c.getCourseCode().equals(id_c)){
+                return c;
+            }
+        }
+        throw new ContentNotFoundException("No such course");        
+    }
+    public Vector<Course> getCoursesByStudent(Student s){
+        return db.getStudentsCourses(s);
     }
 }

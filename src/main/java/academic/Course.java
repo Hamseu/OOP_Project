@@ -27,6 +27,9 @@ public class Course implements Serializable {
         this.students = new Vector<>();
         this.lessons = new Vector<>();
     }
+    public Course(){
+        
+    }
 
     public void addInstructor(Teacher teacher) {
         instructors.add(teacher);

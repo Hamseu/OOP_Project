@@ -1,19 +1,22 @@
 package services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 import database.UDBM;
 import exceptions.UserNotFoundException;
 import users.User;
 
 public class UserService {
-    private List<User> users = new ArrayList<>();
+    private Vector<User> users = new Vector<>();
     private static final UDBM db = new UDBM();
 
     public void addUser(User user, String password) {
         users.add(user);
         db.addUser(user, password);
+    }
+
+    public static UserService getInstance(){
+        return new UserService();
     }
 
     public void removeUser(String id) throws UserNotFoundException {
@@ -40,5 +43,10 @@ public class UserService {
     }
 
     return user;
+    }
+
+    public Vector<User> getUsers(){
+        this.users = db.getUsers();
+        return users;
     }
 }

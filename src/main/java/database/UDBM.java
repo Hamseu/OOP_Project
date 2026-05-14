@@ -35,12 +35,14 @@ public class UDBM {
                 "postgres",
                 "Horse"
             );
-            System.out.println("Connected!");
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Connection failed");
         }
+    }
+    static{
+        System.out.println("You are connected!");
     }
 
     private User mapUser(ResultSet rs) throws SQLException {
@@ -1115,7 +1117,7 @@ private Lesson mapLesson(ResultSet rs) throws SQLException {
     );
 }
 
-    public Vector<Course> getAllCourses() {
+    public Vector<Course> getAllCourses() throws SQLException{
     Vector<Course> courses = new Vector<>();
 
     String sql = """

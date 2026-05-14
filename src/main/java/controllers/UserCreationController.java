@@ -7,11 +7,14 @@ import users.Student;
 import users.Teacher;
 import users.User;
 
-public class UserCreationController {
-     private UDBM db;
+public class UserCreationController extends Controller{
 
     public UserCreationController(UDBM userService) {
         this.db = userService;
+    }
+
+    public static UserCreationController getInstance(UDBM db){
+         return new UserCreationController(db);
     }
 
     public void addUser(User user, String password) {

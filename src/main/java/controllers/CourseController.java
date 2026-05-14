@@ -1,6 +1,6 @@
 package controllers;
 
-import java.util.List;
+import java.util.Scanner;
 
 import academic.Course;
 import exceptions.CreditLimitException;
@@ -8,26 +8,35 @@ import services.CourseService;
 import users.Student;
 import users.Teacher;
 
-public class CourseController {
-    private CourseService courseService;
-
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
+public class CourseController extends Controller{
+    private final CourseService CS = new CourseService();
+    public CourseController() {
+        
     }
 
-    public void createCourse(Course course) {
-        courseService.createCourse(course);
+    public void createCourse(Scanner scanner) {
+        String code = RS.readLine("Course code: ", scanner);
+        String name = RS.readLine("Course name: ", scanner);
+        int credits = RS.readInt("Credits: ", scanner);
+
+        Course course = new Course(code, name, credits);
+        CS.createCourse(course);
+
+        System.out.println("Course created: " + course);
     }
 
     public void assignTeacher(Course course, Teacher teacher) {
-        courseService.assignTeacher(course, teacher);
+        CS.assignTeacher(course, teacher);
     }
 
     public void registerStudent(Student student, Course course) throws CreditLimitException {
-        courseService.registerStudent(student, course);
+        CS.registerStudent(student, course);
     }
 
-    public List<Course> viewCourses() {
-        return courseService.getCourseDB();
+    public void printAllCourses() {
+        System.out.println("All courses:");
+        for (Course course : CS.getCourses()) {
+            System.out.println(course);
+        }
     }
 }

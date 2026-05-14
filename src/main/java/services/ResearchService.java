@@ -94,4 +94,11 @@ public class ResearchService {
     public Vector<ResearchProject> getProjects() {
         return db.getAllResearchProjects();
     }
+
+    public void addResearchPaper(ResearchPaper rp){
+        db.addResearchPaper(rp);
+    }
+    public void assignHeadLector(String id_t, String id_c){
+        db.assignHeadLector(id_t, id_c);
+    }
 }
