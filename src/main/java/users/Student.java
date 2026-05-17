@@ -70,8 +70,16 @@ public class Student extends User implements Researcher{
         return yearOfStudy;
     }
 
+    public void setYearOfStudy(int yearOfStudy) {
+        this.yearOfStudy = yearOfStudy;
+    }
+
     public double getGpa() {
         return gpa;
+    }
+
+    public void setGpa(double gpa) {
+        this.gpa = gpa;
     }
 
     @Override
