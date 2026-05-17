@@ -15,6 +15,7 @@ import comparators.PaperByPagesComparator;
 import controllers.AdminController;
 import controllers.CourseController;
 import controllers.MarkController;
+import controllers.NewsController;
 import controllers.ResearchController;
 import controllers.UserCreationController;
 import database.UDBM;
@@ -29,6 +30,7 @@ import research.Researcher;
 import services.CourseService;
 import services.EmployeeService;
 import services.MarkService;
+import services.NewsService;
 import services.ResearchService;
 import services.StudentService;
 import services.UserService;
@@ -60,6 +62,8 @@ public class Main {
     private static final CourseController courseController = new CourseController(courseService);
     private static final MarkController markController = new MarkController(markService);
     private static final ResearchController researchController = new ResearchController(researchService);
+    private static final NewsService newsService = new NewsService(db);
+    private static final NewsController newsController = new NewsController(newsService);
     static boolean running = true;
     private static Vector<ResearchProject> projects = researchService.getProjects();
 
@@ -472,15 +476,15 @@ public class Main {
     }
 
     private static int readInt(String message) {
-    while (true) {
-        try {
-            System.out.print(message);
-            return Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter integer number.");
+        while (true) {
+            try {
+                System.out.print(message);
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter integer number.");
+            }
         }
     }
-}
 
     private static double readDouble(String message) {
         while (true) {
@@ -494,6 +498,7 @@ public class Main {
             }
         }
     }
+
 
     public static boolean executeOperation(int choice, UserType switcher, Active user) throws Exception {
     if (choice == 1) {
@@ -568,6 +573,23 @@ private static void viewReceivedRequests(Active user){
         }
 }
 
+private static void addNews(Active user) {
+    System.out.println("\n========== ADD NEWS ==========");
+    String title = readLine("Enter news title: ");
+    String content = readLine("Enter news content: ");
+    
+    newsController.addNews(title, content, user.username);
+}
+
+private static void viewNews() {
+    newsController.displayNewsList();
+    
+    int choice = readInt("Enter the news number to read details (0 to skip): ");
+    if (choice > 0) {
+        newsController.displayNewsDetail(choice);
+    }
+}
+
 private static boolean executeTeacherOperation(int choice, Active user) throws Exception {
     switch (choice) {
         case 2:
@@ -583,26 +605,31 @@ private static boolean executeTeacherOperation(int choice, Active user) throws E
             break;
 
         case 5:
-            becomeResearcher(user);
+            viewNews();
             break;
 
         case 6:
-            joinResearchProject();
+            becomeResearcher(user);
             break;
 
         case 7:
-            createResearchProject(user);
+            joinResearchProject();
             break;
 
         case 8:
+            createResearchProject(user);
+            break;
+
+        case 9:
             createResearchPaper();
             break;
-        case 9:
-            makeRequest(user);
         case 10:
-            viewOwnRequests(user);
+            makeRequest(user);
             break;
         case 11:
+            viewOwnRequests(user);
+            break;
+        case 12:
             viewReceivedRequests(user);
             break;
 
@@ -755,6 +782,12 @@ private static boolean executeAdminManagerOperation(int choice, Active user) thr
         case 20:
             viewReceivedRequests(user);
             break;
+        case 21:
+            addNews(user);
+            break;
+        case 22:
+            viewNews();
+            break;
         case 0:
             System.out.println("Goodbye");
         default:
@@ -786,18 +819,21 @@ private static boolean executeStudentOperation(int choice, Active user) throws E
             printLessons(user);
             break;
         case 7:
+            viewNews();
+            break;
+        case 8:
             becomeResearcher(user);
             break;
 
-        case 8:
+        case 9:
             joinResearchProject();
             break;
 
-        case 9:
+        case 10:
             createResearchProject(user);
             break;
 
-        case 10:
+        case 11:
             createResearchPaper();
             break;
 
@@ -825,11 +861,15 @@ private static boolean executeResearcherOperation(int choice, Active user) throw
             break;
         case 6:
             makeRequest(user);
+            break;
         case 7:
             viewOwnRequests(user);
             break;
         case 8:
             viewReceivedRequests(user);
+            break;
+        case 9:
+            viewNews();
             break;
 
         default:

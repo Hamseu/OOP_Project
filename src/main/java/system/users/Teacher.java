@@ -5,7 +5,6 @@ import system.enums.TeacherRank;
 import system.research.ResearchActive;
 import system.research.ResearchPaper;
 import system.research.ResearchProject;
-import system.academic.Mark;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -36,25 +35,25 @@ public class Teacher extends Employee implements ResearchActive {
 
     // --- Академические методы ---
 
-    public void setLessonMark(Mark mark, int value) {
-        mark.setLessonMark(value);
-        System.out.println(username + " set lesson mark: " + value);
-    }
+    // public void setLessonMark(Mark mark, int value) {
+    //     mark.setLessonMark(value);
+    //     System.out.println(username + " set lesson mark: " + value);
+    // }
 
-    public void setAttMark(Mark mark, int value) {
-        mark.setAttMark(value);
-        System.out.println(username + " set attendance mark: " + value);
-    }
+    // public void setAttMark(Mark mark, int value) {
+    //     mark.setAttMark(value);
+    //     System.out.println(username + " set attendance mark: " + value);
+    // }
 
-    public void setExamMark(Mark mark, int value) {
-        mark.setExamMark(value);
-        System.out.println(username + " set exam mark: " + value);
-    }
+    // public void setExamMark(Mark mark, int value) {
+    //     mark.setExamMark(value);
+    //     System.out.println(username + " set exam mark: " + value);
+    // }
 
-    public void setFinalMark(Mark mark) {
-        mark.calculateFinal();
-        System.out.println(username + " finalized mark for student.");
-    }
+    // public void setFinalMark(Mark mark) {
+    //     mark.calculateFinal();
+    //     System.out.println(username + " finalized mark for student.");
+    // }
 
     public void updateLesson(String lessonId, String newInfo) {
         System.out.println(username + " updated lesson [" + lessonId + "]: " + newInfo);
