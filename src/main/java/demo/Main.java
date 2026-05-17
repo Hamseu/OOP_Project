@@ -358,6 +358,25 @@ public class Main {
         }
     }
 
+    private static void viewStudents() {
+        System.out.println("Students:");
+        for (Student student : db.getAllStudents()) {
+            System.out.println(student.getFullName()
+                    + " | login: " + student.getUsername()
+                    + " | year: " + student.getYearOfStudy()
+                    + " | GPA: " + student.getGpa());
+        }
+    }
+
+    private static void viewTeachers() {
+        System.out.println("Teachers:");
+        for (Teacher teacher : db.getAllTeachers()) {
+            System.out.println(teacher.getFullName()
+                    + " | email: " + teacher.getEmail()
+                    + " | rank: " + teacher.getRank());
+        }
+    }
+
     private static void printMarksReport() throws Exception {
         Course course = findCourseByCode();
         Report report = markController.generateReport(course);
@@ -605,31 +624,35 @@ private static boolean executeTeacherOperation(int choice, Active user) throws E
             break;
 
         case 5:
-            viewNews();
+            viewStudents();
             break;
 
         case 6:
-            becomeResearcher(user);
+            viewNews();
             break;
 
         case 7:
-            joinResearchProject();
+            becomeResearcher(user);
             break;
 
         case 8:
-            createResearchProject(user);
+            joinResearchProject();
             break;
 
         case 9:
+            createResearchProject(user);
+            break;
+
+        case 10:
             createResearchPaper();
             break;
-        case 10:
+        case 11:
             makeRequest(user);
             break;
-        case 11:
+        case 12:
             viewOwnRequests(user);
             break;
-        case 12:
+        case 13:
             viewReceivedRequests(user);
             break;
 
@@ -818,22 +841,28 @@ private static boolean executeStudentOperation(int choice, Active user) throws E
         case 6:
             printLessons(user);
             break;
+
         case 7:
-            viewNews();
+            viewTeachers();
             break;
+
         case 8:
-            becomeResearcher(user);
+            viewNews();
             break;
 
         case 9:
-            joinResearchProject();
+            becomeResearcher(user);
             break;
 
         case 10:
-            createResearchProject(user);
+            joinResearchProject();
             break;
 
         case 11:
+            createResearchProject(user);
+            break;
+
+        case 12:
             createResearchPaper();
             break;
 
@@ -849,13 +878,12 @@ private static boolean executeResearcherOperation(int choice, Active user) throw
         case 2:
             becomeResearcher(user);
             break;
-        case 3: 
+        case 3:
             joinResearchProject();
             break;
         case 4:
             createResearchProject(user);
             break;
-
         case 5:
             createResearchPaper();
             break;
@@ -871,12 +899,10 @@ private static boolean executeResearcherOperation(int choice, Active user) throw
         case 9:
             viewNews();
             break;
-
         default:
             System.out.println("It was wrong option.");
     }
     String t = scanner.nextLine();
     return true;
 }
-
 }

@@ -36,7 +36,7 @@ public class UDBM {
             this.conn = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/university",
                 "postgres",
-                "A2s0e0t6gamepro!"
+                "Horse"
             );
             System.out.println("Connected!");
 
@@ -895,6 +895,48 @@ public void updateCourse(Course c) {
     }
 
     return teachers;
+}
+
+    public Vector<Student> getAllStudents() {
+    Vector<Student> students = new Vector<>();
+
+    String sql = """
+        SELECT
+            u.user_id,
+            u.email,
+            u.username,
+            u.name,
+            u.surname,
+            s.year,
+            s.GPA
+        FROM users u
+        JOIN student s ON s.user_id = u.user_id
+        ORDER BY u.user_id
+    """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            Student student = new Student(
+                    rs.getString("user_id"),
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("name"),
+                    rs.getString("surname"),
+                    rs.getString("user_id"),
+                    rs.getInt("year")
+            );
+            student.setGpa(rs.getDouble("GPA"));
+            students.add(student);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to get all students.");
+    }
+
+    return students;
 }
 
     public Vector<Manager> getAllManagers() {

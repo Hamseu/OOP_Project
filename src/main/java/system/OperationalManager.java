@@ -100,6 +100,9 @@ public class OperationalManager{
         System.out.println(counter + ". Print all courses");
 
         counter++;
+        System.out.println(counter + ". View Students");
+
+        counter++;
         System.out.println(counter + ". View News");
 
         counter++;
@@ -128,6 +131,9 @@ public class OperationalManager{
         System.out.println(counter + ". Print your classes");
         counter++;
         System.out.println(counter + ". Print lessons");
+
+        counter++;
+        System.out.println(counter + ". View Teachers");
 
         counter++;
         System.out.println(counter + ". View News");
