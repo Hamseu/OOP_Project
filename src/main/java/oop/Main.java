@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         UDBM db = new UDBM();
-        boolean loginer = Authenticate.consolewin(db);
+        boolean loginer = Authenticate.consolewin(db, null);
         Scanner nerr = new Scanner(System.in);
         while (true) {
             
@@ -23,7 +23,7 @@ public class Main {
                 int ch = nerr.nextInt();
              }
              else{
-                loginer = Authenticate.consolewin(db);
+                loginer = Authenticate.consolewin(db, nerr);
              }
         } 
     }

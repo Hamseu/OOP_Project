@@ -6,11 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Vector;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import research.ResearchPaper;
+import news.News;
 
 import users.Employee;
 import users.Manager;
@@ -33,7 +36,7 @@ public class UDBM {
             this.conn = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/university",
                 "postgres",
-                "Horse"
+                "A2s0e0t6gamepro!"
             );
             System.out.println("Connected!");
 
@@ -2006,6 +2009,118 @@ public Vector<String> getReceivedRequests(String manager_id){
         sq.printStackTrace();
     }
     return requests;
+}
+
+// ==================== NEWS MANAGEMENT ====================
+
+public void addNews(String title, String content, String publishedBy) {
+    String sql = """
+        INSERT INTO news (news_id, title, content, publish_date_time, published_by)
+        VALUES (gen_random_uuid(), ?, ?, CURRENT_TIMESTAMP, ?)
+    """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setString(3, publishedBy);
+
+        ps.executeUpdate();
+        System.out.println("News published successfully!");
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to publish news.");
+    }
+}
+
+public Vector<News> getAllNews() {
+    Vector<News> newsList = new Vector<>();
+    String sql = """
+                    SELECT news_id, title, content, publish_date_time, published_by
+                    FROM news
+                    ORDER BY publish_date_time DESC
+                 """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            String newsId = rs.getString("news_id");
+            String title = rs.getString("title");
+            String content = rs.getString("content");
+            Timestamp timestamp = rs.getTimestamp("publish_date_time");
+            LocalDateTime publishDateTime = timestamp.toLocalDateTime();
+            String publishedBy = rs.getString("published_by");
+
+            newsList.add(new News(newsId, title, content, publishDateTime, publishedBy));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to retrieve news.");
+    }
+
+    return newsList;
+}
+
+public Vector<News> getAllNewsSortedByDate() {
+    Vector<News> newsList = new Vector<>();
+    String sql = """
+                    SELECT news_id, title, content, publish_date_time, published_by
+                    FROM news
+                    ORDER BY publish_date_time DESC
+                 """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            String newsId = rs.getString("news_id");
+            String title = rs.getString("title");
+            String content = rs.getString("content");
+            Timestamp timestamp = rs.getTimestamp("publish_date_time");
+            LocalDateTime publishDateTime = timestamp.toLocalDateTime();
+            String publishedBy = rs.getString("published_by");
+
+            newsList.add(new News(newsId, title, content, publishDateTime, publishedBy));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to retrieve news.");
+    }
+
+    return newsList;
+}
+
+public News getNewsById(String newsId) {
+    String sql = """
+                    SELECT news_id, title, content, publish_date_time, published_by
+                    FROM news
+                    WHERE news_id = ?
+                 """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, newsId);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String title = rs.getString("title");
+                String content = rs.getString("content");
+                Timestamp timestamp = rs.getTimestamp("publish_date_time");
+                LocalDateTime publishDateTime = timestamp.toLocalDateTime();
+                String publishedBy = rs.getString("published_by");
+
+                return new News(newsId, title, content, publishDateTime, publishedBy);
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to retrieve news.");
+    }
+
+    return null;
 }
 }
 

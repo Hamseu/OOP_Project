@@ -68,4 +68,10 @@ public class User implements Serializable {
     public String getSurname(){
         return this.surname;
     }
+
+
+    public boolean checkPassword(String password) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkPassword'");
+    }
 }

@@ -82,10 +82,14 @@ public class OperationalManager{
         System.out.println(counter + ". Get own requests");
         counter++;
         System.out.println(counter + ". Get received requests");
-        System.out.println("0. Close console");
-    }
 
-    if (switcher == UserType.TEACHER) {
+        counter++;
+        System.out.println(counter + ". Add News");
+
+        counter++;
+        System.out.println(counter + ". View News");
+        System.out.println("0. Close console");
+    } else if (switcher == UserType.TEACHER) {
         counter++;
         System.out.println(counter + ". Put mark");
 
@@ -94,24 +98,10 @@ public class OperationalManager{
 
         counter++;
         System.out.println(counter + ". Print all courses");
-    }
 
-    if (switcher == UserType.STUDENT) {
         counter++;
-        System.out.println(counter + ". Print all courses");
-        counter++;
-        System.out.println(counter + ". Sign up for a course");
-        counter++;
-        System.out.println(counter + ". Print marks");
-        counter++; 
-        System.out.println(counter + ". Print all courses");
-        counter++;
-        System.out.println(counter + ". Print your classes");
-        counter++;
-        System.out.println(counter + ". Print lessons");
-    }
+        System.out.println(counter + ". View News");
 
-    if (switcher == UserType.RESEARCHER || switcher == UserType.STUDENT || switcher == UserType.TEACHER){
         counter++;
         System.out.println(counter + ". Become Researcher");
         counter++;
@@ -120,14 +110,54 @@ public class OperationalManager{
         System.out.println(counter + ". Start research project");
         counter++;
         System.out.println(counter + ". Create research paper");
-        if (switcher == UserType.RESEARCHER || switcher == UserType.TEACHER){
         counter++;
         System.out.println(counter + ". Make request");
         counter++;
         System.out.println(counter + ". Get own requests");
         counter++;
         System.out.println(counter + ". Get received requests");
-    }
+        System.out.println("0. Close console");
+    } else if (switcher == UserType.STUDENT) {
+        counter++;
+        System.out.println(counter + ". Print all courses");
+        counter++;
+        System.out.println(counter + ". Sign up for a course");
+        counter++;
+        System.out.println(counter + ". Print marks");
+        counter++;
+        System.out.println(counter + ". Print your classes");
+        counter++;
+        System.out.println(counter + ". Print lessons");
+
+        counter++;
+        System.out.println(counter + ". View News");
+
+        counter++;
+        System.out.println(counter + ". Become Researcher");
+        counter++;
+        System.out.println(counter + ". Join research project");
+        counter++;
+        System.out.println(counter + ". Start research project");
+        counter++;
+        System.out.println(counter + ". Create research paper");
+        System.out.println("0. Close console");
+    } else if (switcher == UserType.RESEARCHER) {
+        counter++;
+        System.out.println(counter + ". Become Researcher");
+        counter++;
+        System.out.println(counter + ". Join research project");
+        counter++;
+        System.out.println(counter + ". Start research project");
+        counter++;
+        System.out.println(counter + ". Create research paper");
+        counter++;
+        System.out.println(counter + ". Make request");
+        counter++;
+        System.out.println(counter + ". Get own requests");
+        counter++;
+        System.out.println(counter + ". Get received requests");
+        counter++;
+        System.out.println(counter + ". View News");
         System.out.println("0. Close console");
     }
 
