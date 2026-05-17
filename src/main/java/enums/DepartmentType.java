@@ -5,5 +5,8 @@ public enum DepartmentType {
     BS,
     KMA,
     ISE,
-    GENERAL
+    GENERAL,
+    MATH,
+    ADMIN,
+    CS
 }

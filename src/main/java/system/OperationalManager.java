@@ -2,9 +2,11 @@ package system;
 import java.util.Scanner;
 
 import controllers.AdminController;
+import controllers.AttendanceController;
 import controllers.CourseController;
 import controllers.EmployeeController;
 import controllers.MarkController;
+import controllers.NewsController;
 import controllers.ResearchController;
 import controllers.StudentController;
 import controllers.TeacherController;
@@ -21,6 +23,8 @@ public class OperationalManager{
        private final EmployeeController EC;
        private final ResearchController RC;
        private final TeacherController TC;
+       private final NewsController NC;
+       private final AttendanceController ACE;
 
        public OperationalManager(UDBM db){
           this.db = db;
@@ -30,7 +34,9 @@ public class OperationalManager{
           this.CC = new CourseController();
           this.EC = new EmployeeController(db);
           this.RC = new ResearchController();
-          this.TC = new TeacherController();
+          this.TC = new TeacherController(db);
+          this.NC = new NewsController(db);
+          this.ACE = new AttendanceController();
        }
 
 
@@ -49,10 +55,8 @@ public class OperationalManager{
        }
 
        public void operationFrame() {
-    int counter = 0;
-
     System.out.println("Please, select the command");
-
+    int counter = 0;
     counter++;
     System.out.println(counter + ". Exit");
 
@@ -109,7 +113,12 @@ public class OperationalManager{
         System.out.println(counter + ". Get own requests");
         counter++;
         System.out.println(counter + ". Get received requests");
-        System.out.println("0. Close console");
+        counter++;
+        System.out.println(counter + ". Add news");
+        counter++;
+        System.out.println(counter + ". Print all employees");
+        counter++;
+        System.out.println(counter + ". Set attendance");
     }
 
     if (switcher == UserType.TEACHER) {
@@ -121,6 +130,12 @@ public class OperationalManager{
 
         counter++;
         System.out.println(counter + ". Print all courses");
+
+        counter++;
+        System.out.println(counter + ". Print marks for course");
+
+        counter++;
+        System.out.println(counter + ". Set attendance");
     }
 
     if (switcher == UserType.STUDENT) {
@@ -136,6 +151,8 @@ public class OperationalManager{
         System.out.println(counter + ". Print your classes");
         counter++;
         System.out.println(counter + ". Print lessons");
+        counter++;
+        System.out.println(". Print Marks by Course");
     }
 
     if (switcher == UserType.RESEARCHER || switcher == UserType.STUDENT || switcher == UserType.TEACHER){
@@ -155,10 +172,13 @@ public class OperationalManager{
         counter++;
         System.out.println(counter + ". Get received requests");
     }
-        System.out.println("0. Close console");
     }
 
-    
+    counter++;
+    System.out.println(counter + ". View news");
+    counter++;
+    System.out.println(counter + ". View news by author");
+    System.out.println("0. Close console");    
 }
 
     public boolean executeOperation(int choice, UserType switcher, Active user, Scanner scanner) throws Exception {
@@ -203,33 +223,46 @@ private  boolean executeTeacherOperation(int choice, Active user, Scanner scanne
         case 4:
             CC.printAllCourses();
             break;
-
+        
         case 5:
-            RC.becomeResearcher(user, scanner);
+            TC.printCourseMarkDetails(scanner, user);
             break;
-
         case 6:
-            RC.joinResearchProject(scanner);
+            ACE.manageAttendance(user, scanner);
             break;
 
         case 7:
-            RC.createResearchProject(user, scanner);
+            RC.becomeResearcher(user, scanner);
             break;
 
         case 8:
-            RC.createResearchPaper(scanner);
-            break;
-        case 9:
-            EC.makeRequest(user, scanner);
-        case 10:
-            EC.viewOwnRequests(user);
-            break;
-        case 11:
-            EC.viewReceivedRequests(user);
+            RC.joinResearchProject(scanner);
             break;
 
+        case 9:
+            RC.createResearchProject(user, scanner);
+            break;
+
+        case 10:
+            RC.createResearchPaper(scanner);
+            break;
+        case 11:
+            EC.makeRequest(user, scanner);
+        case 12:
+            EC.viewOwnRequests(user);
+            break;
+        case 13:
+            EC.viewReceivedRequests(user);
+            break;
+        case 14:
+            NC.displayNewsList();
+            break;
+        case 15:
+            NC.displayNewsByAuthor(scanner);
+            break; 
+
         default:
-            System.out.println("It was wrong option.");
+            System.out.println("Goodbye, It was wrong option.");
     }
     String t = scanner.nextLine();
     return true;
@@ -308,6 +341,23 @@ private boolean executeAdminManagerOperation(int choice, Active user, Scanner sc
         case 20:
             EC.viewReceivedRequests(user);
             break;
+        case 21:
+            AC.addNews(scanner, user);
+            break;
+        case 22:
+            AC.printAllEmployees();
+            break;
+            
+        case 23:
+            ACE.manageAttendance(user, scanner);
+            break;
+            
+        case 24:
+            NC.displayNewsList();
+           break;
+        case 25:
+             NC.displayNewsByAuthor(scanner);
+            break;
         case 0:
             System.out.println("Goodbye");
         default:
@@ -339,23 +389,31 @@ private  boolean executeStudentOperation(int choice, Active user, Scanner scanne
             SC.printLessons(user, scanner);
             break;
         case 7:
+            SC.printCourseMarkDetails(scanner, user);
+            break;
+        case 8:
             RC.becomeResearcher(user, scanner);
             break;
 
-        case 8:
+        case 9:
             RC.joinResearchProject(user, scanner);
             break;
 
-        case 9:
+        case 10:
             RC.createResearchProject(user, scanner);
             break;
 
-        case 10:
+        case 11:
             RC.createResearchPaper(user, scanner);
             break;
-
+        case 12:
+            NC.displayNewsList();
+            break;
+        case 13:
+            NC.displayNewsByAuthor(scanner);
+            break;
         default:
-            System.out.println("It was wrong option.");
+            System.out.println("Goodbye, It was wrong option.");
     }
     String t = scanner.nextLine();
     return true;
@@ -384,9 +442,15 @@ private  boolean executeResearcherOperation(int choice, Active user, Scanner sca
         case 8:
             EC.viewReceivedRequests(user);
             break;
+        case 9:
+            NC.displayNewsList();
+            break;
+        case 10:
+            NC.displayNewsByAuthor(scanner);
+            break;
 
         default:
-            System.out.println("It was wrong option.");
+            System.out.println("Goodbye, It was wrong option.");
     }
     String t = scanner.nextLine();
     return true;

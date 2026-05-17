@@ -5,7 +5,7 @@ import services.FindService;
 import services.ReadService;
 
 public abstract class Controller {
-    protected UDBM db;
+    protected UDBM db = new UDBM();
     protected final FindService FS = FindService.getInstance(db);
     protected final ReadService RS  =ReadService.getInstance();
 

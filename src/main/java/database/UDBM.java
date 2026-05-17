@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import java.sql.Date;
 import java.time.LocalDate;
+
 import research.ResearchPaper;
 
 import users.Employee;
@@ -25,6 +26,7 @@ import academic.Lesson;
 import research.ResearchPaper;
 import research.ResearchProject;
 import research.Researcher;
+import system.News;
 
 public class UDBM {
     Connection conn;
@@ -369,7 +371,7 @@ public void addStudent(Student student, String password) {
     addUser(student, password);
 
     String sql = """
-        INSERT INTO student (user_id, year, GPA, h_index, is_researcher, current_supervisor)
+        INSERT INTO student (user_id, year, gpa, h_index, is_researcher, current_supervisor)
         VALUES (?, ?, ?, ?, ?, ?)
     """;
 
@@ -560,7 +562,7 @@ public void updateResearcher(String userId, double hIndex, boolean active) {
  public void updateStudent(String userId, double year, double gpa, double hIndex, boolean isResearcher, String supervisorId) {
         String sql = """
             UPDATE student
-            SET year = ?, GPA = ?, h_index = ?, is_researcher = ?, current_supervisor = ?
+            SET year = ?, gpa = ?, h_index = ?, is_researcher = ?, current_supervisor = ?
             WHERE user_id = ?
         """;
 
@@ -1667,7 +1669,7 @@ public boolean removeResearchPaper(String paperId) {
             midterm,
             endterm,
             final,
-            GPA
+            gpa
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT (student_id, course_id)
@@ -1677,7 +1679,7 @@ public boolean removeResearchPaper(String paperId) {
             midterm = EXCLUDED.midterm,
             endterm = EXCLUDED.endterm,
             final = EXCLUDED.final,
-            GPA = EXCLUDED.GPA
+            gpa = EXCLUDED.gpa
     """;
 
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -1744,7 +1746,7 @@ public Student getStudentByID(String id) {
             u.name,
             u.surname,
             s.year,
-            s.GPA,
+            s.gpa,
             s.h_index,
             s.is_researcher,
             s.current_supervisor
@@ -1791,7 +1793,7 @@ public Vector<Student> getStudentsByCourse(String id) {
             u.name,
             u.surname,
             s.year,
-            s.GPA,
+            s.gpa,
             s.h_index,
             s.is_researcher
         FROM enrollments e
@@ -1913,7 +1915,7 @@ public Vector<Student> getStudentsByLesson(String l_id){
             u.name,
             u.surname,
             s.year,
-            s.GPA,
+            s.gpa,
             s.h_index,
             s.is_researcher
         FROM attendance e
@@ -2009,6 +2011,179 @@ public Vector<String> getReceivedRequests(String manager_id){
     }
     return requests;
 }
+
+public void addNews(String title, String content, String authorId){
+     String sql = """
+             INSERT INTO news (title, content, published_by) values (?, ?, ?)
+             """;
+     try(PreparedStatement ps = conn.prepareStatement(sql)){
+
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setString(3, authorId);
+        ps.executeUpdate();
+     }
+     catch (SQLException sq){
+        sq.printStackTrace();
+     }
 }
+
+public Vector<News> getNewsByAuthorId(String id) {
+    String sql = """
+            SELECT * FROM news WHERE published_by = ? ORDER BY publish_date_time DESC
+            """;
+
+    Vector<News> newsList = new Vector<>();
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, id);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                News news = new News();
+
+                news.setID(Integer.toString(rs.getInt("news_id")));
+                news.setTitle(rs.getString("title"));
+                news.setContent(rs.getString("content"));
+                news.setPublisher(rs.getString("published_by"));
+
+                java.sql.Date sqlDate = rs.getDate("publish_date_time");
+
+                if (sqlDate != null) {
+                    news.setPublishedDate(sqlDate.toLocalDate());
+                }
+
+                newsList.add(news);
+            }
+
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return newsList;
+}
+
+public Vector<News> getAllNews(){
+      String sql = """
+            SELECT * FROM news ORDER BY publish_date_time DESC
+            """;
+
+    Vector<News> newsList = new Vector<>();
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                News news = new News();
+
+                news.setID(Integer.toString(rs.getInt("news_id")));
+                news.setTitle(rs.getString("title"));
+                news.setContent(rs.getString("content"));
+                news.setPublisher(rs.getString("published_by"));
+
+                java.sql.Date sqlDate = rs.getDate("publish_date_time");
+
+                if (sqlDate != null) {
+                    news.setPublishedDate(sqlDate.toLocalDate());
+                }
+
+                newsList.add(news);
+            }
+
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return newsList;
+}
+
+public Vector<Course> getCoursesByTeacher(String teacherId) {
+    Vector<Course> courses = new Vector<>();
+
+    String sql = """
+        SELECT
+            c.course_id,
+            c.course_name,
+            c.credits
+        FROM teaching tc
+        JOIN courses c ON c.course_id = tc.course_id
+        WHERE tc.teacher_id = ?
+        ORDER BY c.course_id
+    """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, teacherId);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Course course = new Course(
+                        rs.getString("course_id"),
+                        rs.getString("course_name"),
+                        rs.getInt("credits")
+                );
+
+                courses.add(course);
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to get courses by teacher.");
+    }
+
+    return courses;
+}
+
+public Vector<Employee> getAllEmployees()  throws SQLException{
+    Vector<Employee> employees = new Vector<>();
+
+    String sql = """
+            SELECT
+                u.user_id,
+                u.email,
+                u.username,
+                u.name,
+                u.surname,
+                u.profile_type,
+                e.employee_id,
+                e.salary,
+                e.departmenttype
+            FROM employee e
+            JOIN users u ON u.user_id = e.user_id
+            ORDER BY u.user_id
+            """;
+
+    try (PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            Employee employee = new Employee(
+                    rs.getString("user_id"),
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("name"),
+                    rs.getString("surname"),
+                    rs.getString("profile_type"),
+                    rs.getString("employee_id"),
+                    rs.getDouble("salary"),
+                    rs.getString("departmenttype")
+            );
+
+            employees.add(employee);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Failed to get all employees.");
+    }
+
+    return employees;
+}
+
+}
+
 
 

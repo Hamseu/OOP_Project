@@ -7,6 +7,7 @@ import database.UDBM;
 import services.EmployeeService;
 import system.Active;
 import system.UserType;
+import users.Employee;
 import users.User;
 
 public class EmployeeController extends Controller{
@@ -17,8 +18,8 @@ public class EmployeeController extends Controller{
     }
 
     public void makeRequest(Active user, Scanner scanner){
-      Vector<User> employee = ES.getAllEmployee(db);
-      for (User us : employee){
+      Vector <Employee> employee = ES.getAllEmployee(db);
+        for (User us : employee){
         if (us.getProfile() != UserType.STUDENT){
         System.out.println(us);
         }

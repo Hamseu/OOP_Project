@@ -2,7 +2,7 @@ package users;
 
 import enums.DepartmentType;
 
-public abstract class Employee extends User {
+public  class Employee extends User {
     private String employeeId;
     private double salary;
     private DepartmentType department;
@@ -25,5 +25,9 @@ public abstract class Employee extends User {
 
     public DepartmentType getDepartment() {
         return department;
+    }
+    @Override
+    public String toString(){
+        return super.toString() + " Salary: " + getSalary() + " Department: " + getDepartment();
     }
 }

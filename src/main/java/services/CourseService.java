@@ -58,4 +58,8 @@ public class CourseService {
     public Vector<Course> getCoursesByStudent(Student s){
         return db.getStudentsCourses(s);
     }
+
+    public Vector<Course> getCoursesByTeacher(String id){
+       return db.getCoursesByTeacher(id);
+    }
 }

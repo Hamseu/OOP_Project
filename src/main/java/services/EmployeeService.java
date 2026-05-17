@@ -1,12 +1,13 @@
 package services;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import database.UDBM;
-import system.UserType;
-import users.User;
+import users.Employee;
 
 public class EmployeeService {
+    Vector<Employee> employees;
     public EmployeeService (){
 
     }
@@ -26,13 +27,12 @@ public class EmployeeService {
        return db.getReceivedRequests(receiver_id);
     }
 
-    public Vector<User> getAllEmployee(UDBM db){
-      Vector<User> users = db.getUsers();
-      Vector<User> employees = new Vector<>();
-      for (User us : users){
-        if (us.getProfile() != UserType.STUDENT){
-        employees.add(us);
-        }
+    public Vector<Employee> getAllEmployee(UDBM db){
+      try {
+        this.employees = db.getAllEmployees();
+      }
+      catch (SQLException sq ){
+
       }
       return employees;
     }

@@ -50,6 +50,7 @@ public class FindService {
 
     public Student findStudentById(Scanner scanner) throws Exception, UserNotFoundException {
         String id = rs.readLine("Student id: ", scanner);
+        
         if (db.getStudentByID(id) == null){
             throw new UserNotFoundException("No such Student");
         }

@@ -9,9 +9,14 @@ import database.UDBM;
 import enums.LessonType;
 import exceptions.UserNotFoundException;
 import services.CourseService;
+import services.EmployeeService;
+import services.NewsService;
 import services.ResearchService;
 import services.UserService;
+import system.Active;
+import system.UserType;
 import users.Admin;
+import users.Employee;
 import users.FullTimeResearcher;
 import users.Manager;
 import users.Student;
@@ -23,13 +28,21 @@ public class AdminController extends Controller{
     private final UserCreationController ucc = UserCreationController.getInstance(db);
     private final CourseService CS = new CourseService();
     private final ResearchService reS = new ResearchService();
+    private  final NewsService NS = NewsService.getInstance(db);
+    private final CourseController CC = new CourseController(); 
+    private final EmployeeService EC = EmployeeService.getInstance();
 
     public AdminController(UDBM db) {
         this.db = db;
     }
 
     public void addUser(User user, String password) {
-        db.addUser(user, password);
+        ucc.addUser(user, password);
+    }
+    public void addNews(Scanner scanner, Active user){
+        String title = RS.readLine("Enter a title: ", scanner);
+        String content = RS.readLine("What do you want to inform about?: ", scanner);
+        NS.addNews(title, content, user.user_id);
     }
 
     public void removeUser(String id) throws UserNotFoundException {
@@ -149,14 +162,18 @@ public class AdminController extends Controller{
     }
 
     public void assignTeacherToCourse(Scanner scanner) throws Exception {
+        CC.printAllCourses();
         Course course = FS.findCourseByCode(scanner);
+        printAllTeachers();
         Teacher teacher = FS.findTeacherById(scanner);
 
         CS.assignTeacher(course, teacher);
         System.out.println("Teacher assigned to course.");
     }
     public void registerStudentToCourse(Scanner scanner) throws Exception {
+        printAllStudent();
         Student student = FS.findStudentById(scanner);
+        CC.printAllCourses();
         Course course = FS.findCourseByCode(scanner);
 
         CS.registerStudent(student, course);
@@ -189,5 +206,31 @@ public class AdminController extends Controller{
     String id_c = RS.readLine("Choose course", scanner);
     reS.assignHeadLector(id_t, id_c);
 }
+
+public void printAllStudent(){
+    Vector<User> users = US.getUsers();
+    for (User us : users){
+        if (us.getProfile() == UserType.STUDENT){
+            System.out.println();
+        }
+    }
+} 
+
+public void printAllTeachers(){
+    Vector<User> users = US.getUsers();
+    for (User us : users){
+        if (us.getProfile() == UserType.TEACHER){
+            System.out.println();
+        }
+    }
+} 
+
+public void printAllEmployees(){
+    Vector <Employee> emps = EC.getAllEmployee(db);
+    for (Employee em : emps){
+        System.out.println(em);
+    }
+}
+
 
 }

@@ -7,6 +7,7 @@ import javax.security.auth.login.CredentialException;
 
 import academic.Course;
 import academic.Lesson;
+import academic.Mark;
 import exceptions.ContentNotFoundException;
 import services.CourseService;
 import services.StudentService;
@@ -67,4 +68,35 @@ catch (ContentNotFoundException ce){
 }
 }
 
+public void printCourseMarkDetails(Scanner scanner, Active user){
+     System.out.println("""
+             Your courses: 
+             """);
+     Student s = SSE.getStudentById(this.db, user.user_id);
+     Vector<Course> courses = CS.getCoursesByStudent(s);
+     for(Course c : courses){
+        System.out.println(c);
+     }
+     String chooser = RS.readLine("Choose course: ", scanner);
+     Course c =new Course();
+     try {
+         c = CS.getCourseById(chooser);
+     } catch (ContentNotFoundException e) {
+     }
+     Vector<Mark> marks = db.getMarksByCourse(c);
+     for (Mark m: marks){
+        System.out.printf(
+            "%-25s %-20s %8.1f %8.1f %8.1f %8.1f %8.1f %6s %6.2f%n",
+            m.getStudent().getFullName(),
+            m.getCourse().getCourseName(),
+            m.getFirstAttestation(),
+            m.getSecondAttestation(),
+            m.getMidterm(),
+            m.getEndterm(),
+            m.getFinalExam(),
+            m.getLetterGrade(),
+            m.getGpa()
+    );
+     }
+}
 }
